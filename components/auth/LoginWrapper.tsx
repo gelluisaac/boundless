@@ -129,7 +129,7 @@ const LoginWrapper = ({ setLoadingState }: LoginWrapperProps) => {
       await authClient.signIn.social(
         {
           provider: 'google',
-          callbackURL: callbackUrl,
+          callbackURL: process.env.NEXT_PUBLIC_APP_URL || '/',
         },
         {
           onRequest: () => {
@@ -174,7 +174,7 @@ const LoginWrapper = ({ setLoadingState }: LoginWrapperProps) => {
             email: values.email,
             password: values.password,
             rememberMe: true,
-            callbackURL: callbackUrl,
+            callbackURL: process.env.NEXT_PUBLIC_APP_URL || '/',
           },
           {
             onRequest: () => {
