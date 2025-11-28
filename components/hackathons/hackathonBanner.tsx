@@ -7,7 +7,7 @@ import { formatDate } from '@/lib/utils';
 import { useEffect, useState, useRef, useMemo } from 'react';
 import { FileText, Users, ArrowRight, Calendar } from 'lucide-react';
 import { useAuthStatus } from '@/hooks/use-auth';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 
 interface HackathonBannerProps {
   title: string;
@@ -140,6 +140,7 @@ export function HackathonBanner({
 
   const { isAuthenticated } = useAuthStatus();
   const router = useRouter();
+  const pathname = usePathname();
 
   const hackathonStatus = useRef<'upcoming' | 'ongoing' | 'ended'>('upcoming');
 
@@ -240,7 +241,8 @@ export function HackathonBanner({
   ]);
 
   const handleRedirectToAuthScreen = () => {
-    router.push('/auth?mode=signin');
+    const callbackUrl = encodeURIComponent(pathname);
+    router.push(`/auth?mode=signin&callbackUrl=${callbackUrl}`);
   };
 
   const getStatusColor = () => {

@@ -10,7 +10,7 @@ import { HackathonBanner } from '@/components/hackathons/hackathonBanner';
 import { HackathonNavTabs } from '@/components/hackathons/hackathonNavTabs';
 import { HackathonOverview } from '@/components/hackathons/overview/hackathonOverview';
 import { HackathonParticipants } from '@/components/hackathons/participants/hackathonParticipant';
-// import { HackathonResources } from '@/components/hackathons/resources/resources';
+import { HackathonResources } from '@/components/hackathons/resources/resources';
 import SubmissionTab from '@/components/hackathons/submissions/submissionTab';
 // import { HackathonDiscussions } from '@/components/hackathons/discussion/comment';
 import { TeamFormationTab } from '@/components/hackathons/team-formation/TeamFormationTab';
@@ -48,7 +48,7 @@ export default function HackathonPage() {
             },
           ]
         : []),
-      // { id: 'resources', label: 'Resources' },
+      { id: 'resources', label: 'Resources' },
 
       {
         id: 'submission',
@@ -249,6 +249,9 @@ export default function HackathonPage() {
 
         {activeTab === 'team-formation' && (
           <TeamFormationTab hackathonSlugOrId={hackathonId} />
+        )}
+        {activeTab === 'resources' && (
+          <HackathonResources hackathonSlugOrId={hackathonId} />
         )}
       </div>
     </div>
