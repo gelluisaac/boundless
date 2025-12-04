@@ -16,7 +16,7 @@ export const getMe = async (): Promise<GetMeResponse> => {
     message?: string;
     timestamp: string;
     path?: string;
-  }>('/me');
+  }>('/users/me');
   return res.data.data;
 };
 
@@ -43,11 +43,7 @@ export const getUserProfileByUsername = async (
  * Enhanced auth utilities
  */
 export const refreshUserData = async (): Promise<void> => {
-  try {
-    await getMe();
-  } catch (error) {
-    throw error;
-  }
+  await getMe();
 };
 
 export const checkAuthStatus = async (): Promise<boolean> => {

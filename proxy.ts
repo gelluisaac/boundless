@@ -1,27 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getBetterAuthSession, getServerUser } from '@/lib/auth/server-auth';
+import { getBetterAuthSession } from '@/lib/auth/server-auth';
 
-const protectedRoutes = ['/dashboard', '/user', '/admin', '/me'];
+const protectedRoutes = ['/dashboard', '/user', '/admin'];
 
 const authRoutes = ['/auth', '/auth/signup', '/auth/forgot-password'];
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
-  // Get cookies from request for Better Auth session check
   const cookieHeader = req.headers.get('cookie') || '';
-
-  // Check authentication using the same logic as server components
-  // First try Better Auth session, then fallback to server-side user check
   let isAuthenticated = false;
   try {
     const betterAuthSession = await getBetterAuthSession(cookieHeader);
     if (betterAuthSession?.user) {
       isAuthenticated = true;
-    } else {
-      // Fallback to server user check (which includes getMeServer call)
-      const serverUser = await getServerUser();
-      isAuthenticated = !!serverUser;
     }
   } catch {
     isAuthenticated = false;
@@ -32,31 +24,6 @@ export async function middleware(req: NextRequest) {
   );
 
   const isAuthRoute = authRoutes.some(route => pathname.startsWith(route));
-
-  // Redirect all users to waitlist if not already on waitlist page
-  // Exclude API routes, static assets, and other necessary paths
-  // const shouldRedirect =
-  //   pathname !== '/waitlist' &&
-  //   !pathname.startsWith('/api') &&
-  //   !pathname.startsWith('/_next') &&
-  //   !pathname.startsWith('/favicon.ico') &&
-  //   !pathname.startsWith('/public') &&
-  //   !pathname.match(
-  //     /\.(png|jpg|jpeg|gif|svg|ico|webp|avif|css|js|woff|woff2|ttf|eot)$/i
-  //   );
-
-  // if (shouldRedirect) {
-  //   return NextResponse.redirect(
-  //     new URL('https://www.boundlessfi.xyz/waitlist')
-  //   );
-  // }
-
-  // const isOtherUserProfile = pathname.startsWith('/profile/');
-
-  // if (process.env.NODE_ENV === 'development') {
-  //   // eslint-disable-next-line no-console
-  //   console.log(`Middleware: ${pathname} - Auth: ${isAuthenticated}, Protected: ${isProtectedRoute}, Profile: ${isOtherUserProfile}`);
-  // }
 
   if (isAuthRoute && isAuthenticated) {
     return NextResponse.redirect(new URL('/', req.url));

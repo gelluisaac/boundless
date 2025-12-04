@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "dev": "next dev",
+    "build": "next build",
     "start": "next start",
     "lint": "eslint .",
     "type-check": "tsc --noEmit",
@@ -101,8 +101,7 @@
     "dompurify": "^3.3.0",
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
-    "eslint": "^9",
-    "eslint-config-next": "15.4.4",
+    "eslint-config-next": "^16.0.7",
     "framer-motion": "^12.23.12",
     "gsap": "^3.13.0",
     "input-otp": "^1.4.2",
@@ -112,7 +111,7 @@
     "marked": "^16.3.0",
     "media-chrome": "^4.15.1",
     "motion": "^12.23.24",
-    "next": "^15.5.7",
+    "next": "16.0.7",
     "next-auth": "^5.0.0-beta.29",
     "next-themes": "^0.4.6",
     "nextjs-toploader": "^3.9.17",
@@ -136,10 +135,11 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
     "@typescript-eslint/eslint-plugin": "^8.38.0",
     "@typescript-eslint/parser": "^8.38.0",
+    "eslint": "^8.57.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-prettier": "^5.5.3",
     "husky": "^9.1.7",
@@ -155,7 +155,7 @@
   "overrides": {
     "react": "19.2.1",
     "react-dom": "19.2.1",
-    "@types/react": "^19",
-    "@types/react-dom": "^19"
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3"
   }
 }
