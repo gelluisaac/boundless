@@ -23,8 +23,7 @@ export async function middleware(req: NextRequest) {
       const serverUser = await getServerUser();
       isAuthenticated = !!serverUser;
     }
-  } catch (error) {
-    console.error('Auth check failed in middleware:', error);
+  } catch {
     isAuthenticated = false;
   }
 

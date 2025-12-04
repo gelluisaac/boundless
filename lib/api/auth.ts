@@ -44,21 +44,17 @@ export const getUserProfileByUsername = async (
  */
 export const refreshUserData = async (): Promise<void> => {
   try {
-    console.log('Refreshing user data via API');
     await getMe();
   } catch (error) {
-    console.error('Failed to refresh user data:', error);
     throw error;
   }
 };
 
 export const checkAuthStatus = async (): Promise<boolean> => {
   try {
-    console.log('Checking auth status');
     const session = await authClient.getSession();
     return !!(session && 'user' in session && session.user);
-  } catch (error) {
-    console.error('Failed to check auth status:', error);
+  } catch {
     return false;
   }
 };

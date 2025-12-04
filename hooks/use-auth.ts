@@ -46,11 +46,9 @@ export function useAuth(requireAuth = true) {
       ) {
         try {
           setProfileLoading(true);
-          console.log('Fetching user profile for useAuth');
           const profile = await getMe();
           setUserProfile(profile);
-        } catch (error) {
-          console.error('Failed to fetch user profile:', error);
+        } catch {
         } finally {
           setProfileLoading(false);
         }
@@ -63,31 +61,24 @@ export function useAuth(requireAuth = true) {
   // Handle required auth redirect
   useEffect(() => {
     if (requireAuth && !isAuthenticated && !isLoading) {
-      console.log(
-        'Auth required but user not authenticated, redirecting to signin'
-      );
       router.push('/auth?mode=signin');
     }
   }, [requireAuth, isAuthenticated, isLoading, router]);
 
   const refreshUser = useCallback(async () => {
     try {
-      console.log('Refreshing user data');
       const profile = await getMe();
       setUserProfile(profile);
     } catch (error) {
-      console.error('Failed to refresh user data:', error);
       throw error;
     }
   }, []);
 
   const clearAuth = useCallback(async () => {
     try {
-      console.log('Clearing auth state');
       setUserProfile(null);
       await authClient.signOut();
     } catch (error) {
-      console.error('Failed to sign out:', error);
       throw error;
     }
   }, []);
@@ -146,8 +137,7 @@ export function useAuthStatus() {
           setProfileLoading(true);
           const profile = await getMe();
           setUserProfile(profile);
-        } catch (error) {
-          console.error('Failed to fetch user profile:', error);
+        } catch {
         } finally {
           setProfileLoading(false);
         }
@@ -169,11 +159,9 @@ export function useAuthActions() {
   const router = useRouter();
   const logout = useCallback(async () => {
     try {
-      console.log('Signing out user');
       await authClient.signOut();
       router.push('/');
     } catch (error) {
-      console.error('Failed to sign out:', error);
       throw error;
     }
   }, []);
