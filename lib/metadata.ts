@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { BlogPost } from '@/types/blog';
+import { Hackathon } from '@/lib/api/hackathons';
 
 export interface PageMetadata {
   title: string;
@@ -461,6 +462,85 @@ export function generateBlogPostMetadata(post: BlogPost): Metadata {
       'article:author': post.author.name,
       'article:section': post.categories?.[0] || 'Blog',
       'article:tag': post.tags.map(t => t.tag.name).join(','),
+    },
+  };
+}
+
+// Generate metadata for hackathons
+export function generateHackathonMetadata(hackathon: Hackathon): Metadata {
+  const slug = hackathon.slug;
+  const hackathonUrl = `${baseMetadata.siteUrl}/hackathons/${slug}`;
+
+  const title = `${hackathon.name} | Boundless Hackathons`;
+  const description = truncateDescription(
+    hackathon.tagline || hackathon.description
+  );
+  const keywords = hackathon.categories || [];
+
+  const ogImageUrl = getAbsoluteImageUrl(hackathon.banner);
+
+  return {
+    title,
+    description,
+    keywords: keywords.join(', '),
+
+    // Robots configuration
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+        'max-video-preview': -1,
+      },
+    },
+
+    // Open Graph
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+      url: hackathonUrl,
+      siteName: baseMetadata.siteName,
+      locale: baseMetadata.locale,
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: hackathon.name,
+          type: 'image/jpeg',
+        },
+      ],
+    },
+
+    // Twitter Card
+    twitter: {
+      card: 'summary_large_image',
+      site: baseMetadata.twitterHandle,
+      creator: baseMetadata.twitterHandle,
+      title,
+      description,
+      images: [ogImageUrl],
+    },
+
+    // Canonical and alternates
+    alternates: {
+      canonical: hackathonUrl,
+      languages: {
+        'en-US': hackathonUrl,
+      },
+    },
+
+    // Category
+    category: hackathon.categories?.[0] || 'Hackathon',
+
+    // Additional metadata
+    other: {
+      'og:site_name': baseMetadata.siteName,
+      'og:locale': baseMetadata.locale,
     },
   };
 }
