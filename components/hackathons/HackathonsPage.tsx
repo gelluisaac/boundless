@@ -1,14 +1,15 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import HackathonCard from '@/components/landing-page/hackathon/HackathonCard';
 import HackathonsFiltersHeader from '@/components/hackathons/HackathonsFiltersHeader';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { useHackathonFilters } from '@/hooks/hackathon/use-hackathon-filters';
 import { useHackathonsList } from '@/hooks/hackathon/use-hackathons-list';
 import { useHackathonTransform } from '@/hooks/hackathon/use-hackathon-transform';
+import { useInfiniteScroll } from '@/hooks/use-infinite-scroll';
 import { BoundlessButton } from '../buttons';
-import { ArrowDownIcon, XIcon } from 'lucide-react';
+import { XIcon } from 'lucide-react';
 import LoadingScreen from '@/features/projects/components/CreateProjectModal/LoadingScreen';
 import EmptyState from '@/components/EmptyState';
 
@@ -52,6 +53,22 @@ export default function HackathonsPage({
       );
     });
   }, [hackathons, transformHackathonForCard]);
+
+  const [loadMoreSentinelEl, setLoadMoreSentinelRef] =
+    useState<HTMLDivElement | null>(null);
+  const setLoadMoreSentinelRefWithLog = React.useCallback(
+    (el: HTMLDivElement | null) => {
+      console.log('[HackathonsPage] Sentinel ref set', el ? 'element' : 'null');
+      setLoadMoreSentinelRef(el);
+    },
+    []
+  );
+  useInfiniteScroll(loadMoreSentinelEl, {
+    onLoadMore: loadMore,
+    hasMore,
+    loading: loadingMore,
+    rootMargin: '0px 0px 2000px 0px',
+  });
 
   return (
     <div className={className} id='explore-hackathons'>
@@ -161,27 +178,16 @@ export default function HackathonsPage({
               {hackathonCards}
             </div>
 
-            {hasMore && (
-              <div className='mt-8 flex items-center justify-center'>
-                <BoundlessButton
-                  onClick={loadMore}
-                  variant='outline'
-                  disabled={loadingMore}
-                  icon={
-                    loadingMore ? undefined : (
-                      <ArrowDownIcon className='h-4 w-4' />
-                    )
-                  }
-                  className='flex items-center gap-2 rounded-lg px-8 py-3 font-medium text-white transition-colors disabled:cursor-not-allowed disabled:bg-gray-600'
-                  iconPosition='right'
-                >
-                  {loadingMore && (
-                    <LoadingSpinner size='sm' variant='spinner' color='white' />
-                  )}
-                  {loadingMore
-                    ? 'Loading more hackathons...'
-                    : 'Load More Hackathons'}
-                </BoundlessButton>
+            <div
+              ref={setLoadMoreSentinelRefWithLog}
+              className='h-px w-full'
+              aria-hidden
+            />
+
+            {loadingMore && (
+              <div className='mt-6 flex items-center justify-center gap-2 py-4 text-gray-400'>
+                <LoadingSpinner size='sm' variant='spinner' color='white' />
+                <span className='text-sm'>Loading more hackathons...</span>
               </div>
             )}
           </>

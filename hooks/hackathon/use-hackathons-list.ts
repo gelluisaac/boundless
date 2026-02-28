@@ -39,7 +39,7 @@ interface UseHackathonsListReturn {
 export function useHackathonsList(
   options: UseHackathonsListOptions = {}
 ): UseHackathonsListReturn {
-  const { initialPage = 1, pageSize = 9, initialFilters = {} } = options;
+  const { initialPage = 1, pageSize = 10, initialFilters = {} } = options;
 
   const [hackathons, setHackathons] = React.useState<Hackathon[]>([]);
   const [featuredHackathons, setFeaturedHackathons] = React.useState<
@@ -156,6 +156,10 @@ export function useHackathonsList(
   const fetchHackathons = React.useCallback(
     async (page: number, currentFilters: HackathonFilters, append = false) => {
       try {
+        console.log('[useHackathonsList] fetchHackathons called', {
+          page,
+          append,
+        });
         if (append) {
           setLoadingMore(true);
         } else {
@@ -181,6 +185,13 @@ export function useHackathonsList(
         const response: PublicHackathonsListData =
           await getPublicHackathonsList(apiFilters);
         let hackathonsList = response.hackathons || [];
+
+        console.log('[useHackathonsList] API response', {
+          page,
+          count: hackathonsList.length,
+          total: response.total,
+          hasMore: response.hasMore ?? false,
+        });
 
         // Apply client-side location filtering (API doesn't support it)
         hackathonsList = filterByLocation(
@@ -212,6 +223,7 @@ export function useHackathonsList(
           setHackathons(hackathonsList);
         }
       } catch (err) {
+        console.error('[useHackathonsList] fetchHackathons error', err);
         const errorMessage =
           err instanceof Error ? err.message : 'Failed to fetch hackathons';
         setError(errorMessage);
@@ -231,10 +243,20 @@ export function useHackathonsList(
   }, [filters, fetchHackathons]);
 
   const loadMore = React.useCallback(() => {
+    console.log('[useHackathonsList] loadMore called', {
+      loadingMore,
+      hasMore,
+      currentPage,
+    });
     if (!loadingMore && hasMore) {
       const nextPage = currentPage + 1;
+      console.log('[useHackathonsList] Fetching next page', nextPage);
       setCurrentPage(nextPage);
       fetchHackathons(nextPage, filters, true);
+    } else {
+      console.log(
+        '[useHackathonsList] loadMore skipped (loadingMore or !hasMore)'
+      );
     }
   }, [loadingMore, hasMore, currentPage, filters, fetchHackathons]);
 

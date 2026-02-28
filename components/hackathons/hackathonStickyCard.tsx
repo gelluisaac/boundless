@@ -69,7 +69,7 @@ export function HackathonStickyCard(props: HackathonStickyCardProps) {
   // Determine if registration is allowed
   const canRegister = useMemo(() => {
     const now = new Date();
-    const policy = registrationDeadlinePolicy || 'before_submission_deadline';
+    const policy = registrationDeadlinePolicy || 'BEFORE_SUBMISSION_DEADLINE';
 
     switch (policy) {
       case 'BEFORE_START':
@@ -91,7 +91,7 @@ export function HackathonStickyCard(props: HackathonStickyCardProps) {
     const now = new Date();
     const beforeStart = startDate && now < new Date(startDate);
 
-    switch (registrationDeadlinePolicy || 'before_submission_deadline') {
+    switch (registrationDeadlinePolicy || 'BEFORE_SUBMISSION_DEADLINE') {
       case 'BEFORE_START':
         return 'Register';
       case 'BEFORE_SUBMISSION_DEADLINE':
