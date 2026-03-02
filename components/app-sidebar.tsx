@@ -28,7 +28,7 @@ import {
 import Image from 'next/image';
 import Link from 'next/link';
 
-const navigationData = {
+const getNavigationData = (counts?: { participating?: number }) => ({
   main: [
     {
       title: 'Overview',
@@ -62,9 +62,12 @@ const navigationData = {
   hackathons: [
     {
       title: 'Participating',
-      url: '/me/hackathons',
+      url: '/me/participating',
       icon: IconShieldCheck,
-      badge: '2',
+      badge:
+        counts?.participating && counts.participating > 0
+          ? counts.participating.toString()
+          : undefined,
     },
     {
       title: 'Submissions',
@@ -97,16 +100,27 @@ const navigationData = {
       badge: '5',
     },
   ],
-};
-interface userData {
+});
+
+interface UserData {
   name: string;
   email: string;
-  image: string;
+  image: string | null;
 }
+
 export function AppSidebar({
   user,
+  counts,
   ...props
-}: { user: userData } & React.ComponentProps<typeof Sidebar>) {
+}: {
+  user: UserData;
+  counts?: { participating?: number };
+} & React.ComponentProps<typeof Sidebar>) {
+  const navigationData = React.useMemo(
+    () => getNavigationData(counts),
+    [counts]
+  );
+
   return (
     <Sidebar collapsible='icon' {...props}>
       <div className='pointer-events-none absolute inset-0 overflow-hidden'>

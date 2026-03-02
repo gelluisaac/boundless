@@ -4,11 +4,29 @@ import { AppSidebar } from '@/components/app-sidebar';
 import { SiteHeader } from '@/components/site-header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { useAuthStatus } from '@/hooks/use-auth';
-import React from 'react';
+import React, { useMemo } from 'react';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
 export default function MeLayout({ children }: { children: React.ReactNode }) {
   const { user, isLoading } = useAuthStatus();
+
+  const { name = '', email = '', profile, image: userImage = '' } = user || {};
+
+  const userData = {
+    name: name || '',
+    email,
+    image:
+      (profile as any)?.user?.image || (profile as any)?.image || userImage,
+  };
+
+  const hackathonsCount = useMemo(() => {
+    if (!profile) return 0;
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const joined = (profile as any)?.user?.joinedHackathons || [];
+
+    return joined.length;
+  }, [profile]);
 
   if (isLoading) {
     return (
@@ -17,14 +35,6 @@ export default function MeLayout({ children }: { children: React.ReactNode }) {
       </div>
     );
   }
-
-  const { name = '', email = '', profile, image: userImage = '' } = user || {};
-
-  const userData = {
-    name: name || '',
-    email,
-    image: profile?.image || userImage,
-  };
 
   return (
     <SidebarProvider
@@ -35,7 +45,11 @@ export default function MeLayout({ children }: { children: React.ReactNode }) {
         } as React.CSSProperties
       }
     >
-      <AppSidebar user={userData} variant='inset' />
+      <AppSidebar
+        user={userData}
+        counts={{ participating: hackathonsCount }}
+        variant='inset'
+      />
       <SidebarInset className='bg-[#0e0c0c]'>
         <SiteHeader />
         <div className='flex flex-1 flex-col'>{children}</div>
