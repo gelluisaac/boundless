@@ -135,7 +135,7 @@ export function ChartAreaInteractive({
                 cursor={false}
                 content={
                   <ChartTooltipContent
-                    className='bg-background! border-border/20! w-[150px] text-white!'
+                    className='bg-background! border-border/20! w-[180px] text-white! shadow-lg!'
                     labelFormatter={value => {
                       return new Date(value).toLocaleDateString('en-US', {
                         month: 'short',
@@ -143,6 +143,10 @@ export function ChartAreaInteractive({
                         year: 'numeric',
                       });
                     }}
+                    formatter={(value: number, name: string) => [
+                      `${value} ${name === 'projects' ? 'activities' : name}`,
+                      'Activity Count',
+                    ]}
                   />
                 }
               />
