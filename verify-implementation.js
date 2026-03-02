@@ -27,9 +27,9 @@ const requiredPatterns = [
   { pattern: 'refreshUser', description: 'refreshUser() call' },
   { pattern: 'GetMeResponse', description: 'TypeScript types' },
   { pattern: 'MeDashboardSkeleton', description: 'Skeleton UI' },
-  { pattern: 'user\\.profile', description: 'Real session data mapping' },
-  { pattern: 'meData\\.stats', description: 'Stats data mapping' },
-  { pattern: 'meData\\.chart', description: 'Chart data mapping' }
+  { pattern: 'user.profile', description: 'Real session data mapping' },
+  { pattern: 'meData.stats', description: 'Stats data mapping' },
+  { pattern: 'meData.chart', description: 'Chart data mapping' }
 ];
 
 console.log('\n📋 CHECKING MeDashboard.tsx:');

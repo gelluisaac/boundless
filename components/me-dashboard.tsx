@@ -5,16 +5,15 @@ import { SectionCards } from '@/components/section-cards';
 import { ChartAreaInteractive } from '@/components/chart-area-interactive';
 import { RecentProjects } from '@/components/recent-projects';
 import { MeDashboardSkeleton } from '@/components/me-dashboard-skeleton';
-import { useAuthStatus } from '@/hooks/use-auth';
 import { useAuth } from '@/hooks/use-auth';
 import { motion } from 'motion/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 export function MeDashboard() {
-  const { user, isLoading } = useAuthStatus();
-  const { refreshUser } = useAuth();
+  const { user, isLoading, refreshUser } = useAuth();
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const hasMounted = useRef(false);
   
   // Cast user.profile to GetMeResponse for type safety
   const meData = user?.profile as GetMeResponse | undefined;
@@ -22,11 +21,12 @@ export function MeDashboard() {
   // Trigger refreshUser on mount to ensure latest data
   useEffect(() => {
     const refreshData = async () => {
-      if (!isRefreshing && !isLoading) {
+      if (!isRefreshing && !isLoading && !hasMounted.current) {
         try {
           setIsRefreshing(true);
           setError(null);
           await refreshUser();
+          hasMounted.current = true;
         } catch (err) {
           setError('Failed to load latest data');
           console.error('Refresh user failed:', err);

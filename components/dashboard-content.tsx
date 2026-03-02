@@ -5,10 +5,9 @@ import { ChartAreaInteractive } from '@/components/chart-area-interactive';
 import { SectionCards } from '@/components/section-cards';
 import { SiteHeader } from '@/components/site-header';
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
-import { useAuthStatus } from '@/hooks/use-auth';
 import { useAuth } from '@/hooks/use-auth';
 import { motion } from 'motion/react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { MeDashboardSkeleton } from '@/components/me-dashboard-skeleton';
 import { FamilyWalletButton } from '@/components/wallet/FamilyWalletButton';
 import {
@@ -18,21 +17,22 @@ import {
 import { GetMeResponse } from '@/lib/api/types';
 
 export function DashboardContent() {
-  const { user, isLoading } = useAuthStatus();
-  const { refreshUser } = useAuth();
+  const { user, isLoading, refreshUser } = useAuth();
   const [familyDrawerOpen, setFamilyDrawerOpen] = useState(false);
   const [drawerView, setDrawerView] = useState<DrawerView>('main');
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const hasMounted = useRef(false);
 
   // Trigger refreshUser on mount to ensure latest data
   useEffect(() => {
     const refreshData = async () => {
-      if (!isRefreshing && !isLoading) {
+      if (!isRefreshing && !isLoading && !hasMounted.current) {
         try {
           setIsRefreshing(true);
           setError(null);
           await refreshUser();
+          hasMounted.current = true;
         } catch (err) {
           setError('Failed to load latest data');
           console.error('Refresh user failed:', err);
@@ -47,7 +47,28 @@ export function DashboardContent() {
 
   // Show skeleton while loading or refreshing
   if (isLoading || isRefreshing) {
-    return <MeDashboardSkeleton />;
+    return (
+      <SidebarProvider
+        style={
+          {
+            '--sidebar-width': 'calc(var(--spacing) * 72)',
+            '--header-height': 'calc(var(--spacing) * 12)',
+          } as React.CSSProperties
+        }
+      >
+        <AppSidebar user={userData} variant='inset' />
+        <SidebarInset className='bg-white'>
+          <SiteHeader />
+          <div className='flex flex-1 flex-col'>
+            <div className='@container/main flex flex-1 flex-col gap-2'>
+              <div className='flex flex-col gap-4 py-4 md:gap-6 md:py-6'>
+                <MeDashboardSkeleton />
+              </div>
+            </div>
+          </div>
+        </SidebarInset>
+      </SidebarProvider>
+    );
   }
 
   // Handle error state
