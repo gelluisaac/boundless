@@ -143,7 +143,7 @@ export function ChartAreaInteractive({
                         year: 'numeric',
                       });
                     }}
-                    formatter={(value: number, name: string) => [
+                    formatter={(value: number, name: string, item: any, index: number, payload: any) => [
                       `${value} ${name === 'projects' ? 'activities' : name}`,
                       'Activity Count',
                     ]}

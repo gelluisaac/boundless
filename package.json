@@ -1,5 +1,5 @@
 {
-  "name": "Boundless Frontend v1",
+"name": "boundless-frontend-v1",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -12,7 +12,7 @@
     "format:check": "prettier --check .",
     "lint:fix": "eslint --fix .",
     "prepare": "[ -z \"$CI\" ] && [ -z \"$VERCEL\" ] && husky || true",
-    "postinstall": "[ \"$VERCEL\" = \"1\" ] && npm rebuild lightningcss || true"
+    "postinstall": "node -e \"if(process.env.VERCEL==='1') require('child_process').execSync('npm rebuild lightningcss', {stdio:'inherit'})\""
   },
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
@@ -169,10 +169,8 @@
   "optionalDependencies": {
     "usb": "*"
   },
-  "overrides": {
-    "react": "19.2.1",
-    "react-dom": "19.2.1",
-    "@types/react": "19.2.7",
-    "@types/react-dom": "19.2.3"
-  }
+ "overrides": {
+  "react": "19.2.1",
+  "react-dom": "19.2.1"
+}
 }

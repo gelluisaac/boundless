@@ -24,6 +24,14 @@ export function DashboardContent() {
   const [error, setError] = useState<string | null>(null);
   const hasMounted = useRef(false);
 
+  // Prepare userData early to avoid TDZ errors
+  const { name = '', email = '', profile, image: userImage = '' } = user || {};
+  const userData = {
+    name: name || '',
+    email,
+    image: profile?.image || userImage,
+  };
+
   // Trigger refreshUser on mount to ensure latest data
   useEffect(() => {
     const refreshData = async () => {
@@ -108,12 +116,6 @@ export function DashboardContent() {
   }
 
   const meData = user?.profile as GetMeResponse | undefined;
-  const { name = '', email = '', profile, image: userImage = '' } = user || {};
-  const userData = {
-    name: name || '',
-    email,
-    image: profile?.image || userImage,
-  };
 
   // Handle missing data
   if (!meData) {
